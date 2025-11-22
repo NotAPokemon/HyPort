@@ -30,7 +30,7 @@ public class Main {
                     }
                     String os = System.getProperty("os.name").toLowerCase().contains("win") ? "win" : "unix";
                     if (command.hasKey("system")) {
-                        if (!command.getString("system").equalsIgnoreCase(os)) {
+                        if (!command.getString("system").equalsIgnoreCase("unix")) {
                             continue;
                         }
                     }

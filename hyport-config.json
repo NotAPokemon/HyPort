@@ -9,7 +9,7 @@
     },
     {
       "system": "unix",
-      "exe": "sudo ./gradlew",
+      "exe": "./gradlew",
       "args": ["build"]
     }
   ],
