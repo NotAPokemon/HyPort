@@ -1,4 +1,4 @@
-package dev.korgi.file;
+package dev.korgi.json;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -191,6 +191,42 @@ public class JSONObject {
         } else {
             throw new UnsupportedOperationException("Cannot add key-value pair to non-object JSON node");
         }
+    }
+
+    public String toString() {
+        return root.toString();
+    }
+
+    public JSONType<?> getKeyType(String key) {
+        JsonNode node = root.get(key);
+        if (node.isTextual()) {
+            return JSONType.STRING;
+        } else if (node.isInt()) {
+            return JSONType.INTEGER;
+        } else if (node.isBoolean()) {
+            return JSONType.BOOLEAN;
+        } else if (node.isDouble()) {
+            return JSONType.DOUBLE;
+        } else if (node.isObject()) {
+            return JSONType.OBJECT;
+        } else if (node.isArray()) {
+            if (node.size() == 0) {
+                return null;
+            }
+            JsonNode firstElement = node.get(0);
+            if (firstElement.isTextual()) {
+                return JSONType.STRING_LIST;
+            } else if (firstElement.isInt()) {
+                return JSONType.INTEGER_LIST;
+            } else if (firstElement.isBoolean()) {
+                return JSONType.BOOLEAN_LIST;
+            } else if (firstElement.isDouble()) {
+                return JSONType.DOUBLE_LIST;
+            } else if (firstElement.isObject()) {
+                return JSONType.OBJECT_LIST;
+            }
+        }
+        return null;
     }
 
 }

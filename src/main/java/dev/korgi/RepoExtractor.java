@@ -5,8 +5,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import dev.korgi.file.FileHander;
-import dev.korgi.file.JSONObject;
 import dev.korgi.file.Zip;
+import dev.korgi.json.JSONObject;
 
 public class RepoExtractor {
 

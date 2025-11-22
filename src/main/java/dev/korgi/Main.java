@@ -7,7 +7,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import dev.korgi.file.FileHander;
-import dev.korgi.file.JSONObject;
+import dev.korgi.json.JSONObject;
 
 public class Main {
 
