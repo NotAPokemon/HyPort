@@ -3,7 +3,13 @@
   "Version": "1.0.0",
   "Pre-Install": [
     {
+      "system": "win",
       "exe": "./gradlew.bat",
+      "args": ["build"]
+    },
+    {
+      "system": "unix",
+      "exe": "sudo ./gradlew",
       "args": ["build"]
     }
   ],

@@ -25,6 +25,15 @@ public class Main {
             if (config.hasKey("Pre-Install")) {
                 List<JSONObject> preInstall = config.getObjectList("Pre-Install");
                 for (JSONObject command : preInstall) {
+                    if (!command.hasKey("exe") || !command.hasKey("args")) {
+                        throw new IllegalArgumentException("Invalid Pre-Install command format");
+                    }
+                    String os = System.getProperty("os.name").toLowerCase().contains("win") ? "win" : "unix";
+                    if (command.hasKey("system")) {
+                        if (!command.getString("system").equalsIgnoreCase(os)) {
+                            continue;
+                        }
+                    }
                     String exe = command.getString("exe");
                     List<String> argsList = command.getStringList("args");
                     StringBuilder commandBuilder = new StringBuilder();
