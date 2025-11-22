@@ -69,7 +69,13 @@ public class JSONObject {
     public List<String> getStringList(String key) {
         JsonNode node = root.get(key);
         if (node != null && node.isArray()) {
-            return node.findValuesAsText("");
+            List<String> list = new ArrayList<>();
+            for (JsonNode element : node) {
+                if (element.isTextual()) {
+                    list.add(element.asText());
+                }
+            }
+            return list;
         }
         throw new IllegalArgumentException("Key not found or not an array: " + key);
     }
@@ -77,15 +83,27 @@ public class JSONObject {
     public List<Integer> getIntList(String key) {
         JsonNode node = root.get(key);
         if (node != null && node.isArray()) {
-            return node.findValuesAsText("").stream().map(Integer::valueOf).toList();
+            List<Integer> list = new ArrayList<>();
+            for (JsonNode element : node) {
+                if (element.isInt()) {
+                    list.add(element.asInt());
+                }
+            }
+            return list;
         }
         throw new IllegalArgumentException("Key not found or not an array: " + key);
     }
 
-    public List<Boolean> getBooleanList(String key) {
+    public List<Boolean> getBoolList(String key) {
         JsonNode node = root.get(key);
         if (node != null && node.isArray()) {
-            return node.findValuesAsText("").stream().map(Boolean::valueOf).toList();
+            List<Boolean> list = new ArrayList<>();
+            for (JsonNode element : node) {
+                if (element.booleanValue()) {
+                    list.add(element.booleanValue());
+                }
+            }
+            return list;
         }
         throw new IllegalArgumentException("Key not found or not an array: " + key);
     }
@@ -107,7 +125,13 @@ public class JSONObject {
     public List<Double> getDoubleList(String key) {
         JsonNode node = root.get(key);
         if (node != null && node.isArray()) {
-            return node.findValuesAsText("").stream().map(Double::valueOf).toList();
+            List<Double> list = new ArrayList<>();
+            for (JsonNode element : node) {
+                if (element.isDouble()) {
+                    list.add(element.asDouble());
+                }
+            }
+            return list;
         }
         throw new IllegalArgumentException("Key not found or not an array: " + key);
     }

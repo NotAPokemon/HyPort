@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.List;
 
 import dev.korgi.file.FileHander;
@@ -22,13 +21,19 @@ public class Main {
         try {
             JSONObject config = RepoExtractor.extract(name, repo, branchName);
             Path extractedPath = Path.of(config.getString("extracted-path"));
+            String os = System.getProperty("os.name").toLowerCase().contains("win") ? "win" : "unix";
+            if (os.equals("unix")) {
+                Path gradlewPath = extractedPath.resolve("gradlew");
+                if (!Files.isExecutable(gradlewPath)) {
+                    gradlewPath.toFile().setExecutable(true);
+                }
+            }
             if (config.hasKey("Pre-Install")) {
                 List<JSONObject> preInstall = config.getObjectList("Pre-Install");
                 for (JSONObject command : preInstall) {
                     if (!command.hasKey("exe") || !command.hasKey("args")) {
                         throw new IllegalArgumentException("Invalid Pre-Install command format");
                     }
-                    String os = System.getProperty("os.name").toLowerCase().contains("win") ? "win" : "unix";
                     if (command.hasKey("system")) {
                         if (!command.getString("system").equalsIgnoreCase("unix")) {
                             continue;
@@ -41,17 +46,15 @@ public class Main {
                     for (String arg : argsList) {
                         commandBuilder.append(" ").append(arg);
                     }
-                    System.out.println("Executing pre-install command: " + commandBuilder);
+                    System.out.println("Executing command: " + commandBuilder.toString());
                     FileHander.executeIn(commandBuilder.toString(), extractedPath);
                 }
-                System.out.println(Arrays.toString(preInstall.toArray()));
             } else {
                 // Default pre-install commands
                 Path gradlew = extractedPath.resolve("gradlew.bat");
                 if (!Files.exists(gradlew)) {
                     throw new IOException("gradlew.bat not found in extracted repo");
                 }
-                System.out.println("Executing default pre-install command: gradlew.bat build");
                 FileHander.executeIn("gradlew.bat build", extractedPath);
             }
             String projName;
@@ -73,6 +76,9 @@ public class Main {
         } catch (Exception e) {
             ErrorHander.handleError(e);
         }
+
+        FileHander.cleanUp();
+
     }
 
 }
