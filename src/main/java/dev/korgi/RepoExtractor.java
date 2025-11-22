@@ -15,9 +15,11 @@ public class RepoExtractor {
         Path tempFile = Files.createTempFile(repo + "-", ".zip");
         FileHander.download(uri, tempFile);
         Path output_dir = Files.createTempDirectory(repo + "-extracted-");
-        System.out.println(output_dir.toString());
+        FileHander.deleteOnExit(output_dir);
+        FileHander.deleteOnExit(tempFile);
         Zip.unzip(tempFile.toString(), output_dir.toString());
         Path config = output_dir.resolve(String.format("%s-%s/hyport-config.json", repo, branchName));
+        System.out.println("Extracted to: " + output_dir.toString());
         if (!Files.exists(config)) {
             throw new IOException("Invalid hyport repo structure: missing hyport-config.json");
         }

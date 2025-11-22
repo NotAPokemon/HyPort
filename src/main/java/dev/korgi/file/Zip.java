@@ -44,7 +44,6 @@ public class Zip {
                 }
             }
 
-            System.out.println("Unzip completed successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }

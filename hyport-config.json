@@ -6,5 +6,6 @@
       "exe": "gradlew.bat",
       "args": ["build"]
     }
-  ]
+  ],
+  "jar": "build/libs/HyPort-all.jar"
 }

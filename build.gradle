@@ -31,3 +31,25 @@ tasks.jar {
         )
     }
 }
+
+
+task fatJar(type: Jar) {
+    archiveBaseName = 'HyPort-all'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes 'Main-Class': 'dev.korgi.Main'
+    }
+
+    // Include your compiled classes
+    from sourceSets.main.output
+
+    // Include runtime dependencies
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.build {
+    dependsOn fatJar
+}
