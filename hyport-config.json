@@ -13,5 +13,6 @@
       "args": ["build"]
     }
   ],
-  "jar": "build/libs/HyPort-all.jar"
+  "jar": "build/libs/HyPort-all.jar",
+  "install-protocal": "name-only"
 }

@@ -18,6 +18,18 @@ public class Main {
 
         String branchName = "main";
 
+        if (args.length >= 2) {
+            name = args[0];
+            repo = args[1];
+        } else if (args.length >= 3) {
+            name = args[0];
+            repo = args[1];
+            branchName = args[2];
+        } else {
+            System.out.println(
+                    "Using default repository: NotAPokemon/HyPort (Equivalent to passing 'NotAPokemon HyPort' as arguments this essentially updates this tool)");
+        }
+
         try {
             JSONObject config = RepoExtractor.extract(name, repo, branchName);
             Path extractedPath = Path.of(config.getString("extracted-path"));
@@ -69,9 +81,32 @@ public class Main {
             } else {
                 jarPath = Path.of(extractedPath.toString(), String.format("build/libs/%s.jar", repo));
             }
+
+            String installProtocal = "name-only";
+            if (config.hasKey("install-protocal")) {
+                installProtocal = config.getString("install-protocal");
+            }
+            String finalName;
+            if ("name-only".equals(installProtocal)) {
+                finalName = String.format("%s.jar", projName);
+            } else if ("name-version".equals(installProtocal)) {
+                String version = "1.0.0";
+                if (config.hasKey("version")) {
+                    version = config.getString("version");
+                }
+                finalName = String.format("%s-%s.jar", projName, version);
+            } else if (installProtocal.contains("custom|||")) {
+                finalName = installProtocal.replace("custom|||", "");
+            } else {
+                System.out.println("Unknown install-protocal, defaulting to name-only");
+                finalName = String.format("%s.jar", projName);
+            }
             // TODO: update download location to plugin folder if jar isnt already there
             Path finalJarPath = Files
-                    .createFile(Path.of(System.getProperty("user.dir"), String.format("%s.jar", projName)));
+                    .createFile(Path.of(System.getProperty("user.dir"), finalName));
+            if (finalJarPath.toFile().exists()) {
+                finalJarPath.toFile().delete();
+            }
             Files.copy(jarPath, finalJarPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             ErrorHander.handleError(e);
