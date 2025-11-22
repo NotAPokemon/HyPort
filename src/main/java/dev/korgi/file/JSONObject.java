@@ -1,6 +1,7 @@
 package dev.korgi.file;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -92,7 +93,13 @@ public class JSONObject {
     public List<JSONObject> getObjectList(String key) {
         JsonNode node = root.get(key);
         if (node != null && node.isArray()) {
-            return node.findValues("").stream().map(JSONObject::new).toList();
+            List<JSONObject> list = new ArrayList<>();
+            for (JsonNode element : node) {
+                if (element.isObject()) {
+                    list.add(new JSONObject(element));
+                }
+            }
+            return list;
         }
         throw new IllegalArgumentException("Key not found or not an array: " + key);
     }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.List;
 
 import dev.korgi.file.FileHander;
@@ -31,8 +32,18 @@ public class Main {
                     for (String arg : argsList) {
                         commandBuilder.append(" ").append(arg);
                     }
+                    System.out.println("Executing pre-install command: " + commandBuilder);
                     FileHander.executeIn(commandBuilder.toString(), extractedPath);
                 }
+                System.out.println(Arrays.toString(preInstall.toArray()));
+            } else {
+                // Default pre-install commands
+                Path gradlew = extractedPath.resolve("gradlew.bat");
+                if (!Files.exists(gradlew)) {
+                    throw new IOException("gradlew.bat not found in extracted repo");
+                }
+                System.out.println("Executing default pre-install command: gradlew.bat build");
+                FileHander.executeIn("gradlew.bat build", extractedPath);
             }
             String projName;
             if (config.hasKey("ProjectName")) {
@@ -52,8 +63,6 @@ public class Main {
             Files.copy(jarPath, finalJarPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (Exception e) {
             ErrorHander.handleError(e);
-        } finally {
-            FileHander.cleanUp();
         }
     }
 

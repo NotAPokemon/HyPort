@@ -28,6 +28,8 @@ public class FileHander {
         ProcessBuilder builder = new ProcessBuilder();
         builder.command(command.split(" "));
         builder.directory(directory.toFile());
+        builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+        builder.redirectError(ProcessBuilder.Redirect.INHERIT);
         Process process = builder.start();
         int exitCode = process.waitFor();
         if (exitCode != 0) {
