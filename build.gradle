@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    
 }
 
 repositories {
@@ -8,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    // your dependencies here
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
 }
 
 java {

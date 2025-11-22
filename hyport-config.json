@@ -1,0 +1,10 @@
+{
+  "ProjectName": "HyPort",
+  "Version": "1.0.0",
+  "Pre-Install": [
+    {
+      "exe": "gradlew.bat",
+      "args": ["build"]
+    }
+  ]
+}
