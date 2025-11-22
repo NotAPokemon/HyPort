@@ -35,7 +35,7 @@ public class Main {
                         throw new IllegalArgumentException("Invalid Pre-Install command format");
                     }
                     if (command.hasKey("system")) {
-                        if (!command.getString("system").equalsIgnoreCase("unix")) {
+                        if (!command.getString("system").equalsIgnoreCase(os)) {
                             continue;
                         }
                     }
