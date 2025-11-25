@@ -11,6 +11,10 @@
       "system": "unix",
       "exe": "./gradlew",
       "args": ["build"]
+    },
+    {
+      "exe": "echo",
+      "args": ["gewrg", "hehehe"]
     }
   ],
   "jar": "build/libs/HyPort-all.jar",

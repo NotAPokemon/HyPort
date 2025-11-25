@@ -52,10 +52,10 @@ public class RepoExtractor {
                     FileHander.executeIn(commandBuilder.toString(), extractedPath);
                 }
             } else {
-                // Default pre-install commands
                 Path gradlew = extractedPath.resolve("gradlew.bat");
                 if (!Files.exists(gradlew)) {
-                    throw new IOException("gradlew.bat not found in extracted repo");
+                    throw new IOException(
+                            "gradlew.bat not found in extracted repo please include build instructions in the hyport-config");
                 }
                 FileHander.executeIn("gradlew.bat build", extractedPath);
             }
@@ -116,21 +116,33 @@ public class RepoExtractor {
         Zip.unzip(tempFile.toString(), output_dir.toString());
         Path config = output_dir.resolve(String.format("%s-%s/hyport-config.json", repo, branchName));
         System.out.println("Extracted to: " + output_dir.toString());
+        boolean clean = false;
         if (!Files.exists(config)) {
-            throw new IOException("Invalid hyport repo structure: missing hyport-config.json");
+            JSONObject repoInfo = getRepoInfo(name, repo);
+            if (!repoInfo.getString("language").equals("Java")
+                    || !output_dir.resolve(String.format("%s-%s/gradlew", repo, branchName)).toFile().exists()) {
+                throw new IOException(
+                        "Invalid hyport repo structure: missing hyport-config.json and unable to execute default build");
+            }
+            clean = true;
         }
-        JSONObject configObj = JSONObject.parse(config);
+        JSONObject configObj = clean ? new JSONObject() : JSONObject.parse(config);
         configObj.addString("extracted-path",
                 Path.of(output_dir.toString(), String.format("%s-%s", repo, branchName)).toString());
         return configObj;
 
     }
 
-    public static JSONObject extract(String name, String repo) throws IOException {
+    private static JSONObject getRepoInfo(String name, String repo) throws IOException {
         String mainBranchURI = String.format("https://api.github.com/repos/%s/%s", name, repo);
         Path info = Files.createTempFile("info", ".json");
         FileHander.download(mainBranchURI, info);
         JSONObject repoInfo = JSONObject.parse(info);
+        return repoInfo;
+    }
+
+    public static JSONObject extract(String name, String repo) throws IOException {
+        JSONObject repoInfo = getRepoInfo(name, repo);
         String defaultBranch = repoInfo.getString("default_branch");
         return extract(name, repo, defaultBranch);
     }

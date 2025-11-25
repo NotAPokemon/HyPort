@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class JSONObject {
@@ -14,6 +15,10 @@ public class JSONObject {
 
     public JSONObject(JsonNode root) {
         this.root = root;
+    }
+
+    public JSONObject() {
+        this.root = new ObjectNode(new JsonNodeFactory(true));
     }
 
     public static JSONObject parse(Path path) {
