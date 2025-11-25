@@ -20,7 +20,7 @@ public class RepoExtractor {
             if (branchName != null) {
                 config = RepoExtractor.extract(name, repo, branchName);
             } else {
-                config = RepoExtractor.extract(branchName, repo);
+                config = RepoExtractor.extract(name, repo);
             }
             Path extractedPath = Path.of(config.getString("extracted-path"));
             String os = System.getProperty("os.name").toLowerCase().contains("win") ? "win" : "unix";
@@ -115,7 +115,6 @@ public class RepoExtractor {
         FileHander.deleteOnExit(tempFile);
         Zip.unzip(tempFile.toString(), output_dir.toString());
         Path config = output_dir.resolve(String.format("%s-%s/hyport-config.json", repo, branchName));
-        System.out.println("Extracted to: " + output_dir.toString());
         boolean clean = false;
         if (!Files.exists(config)) {
             JSONObject repoInfo = getRepoInfo(name, repo);
